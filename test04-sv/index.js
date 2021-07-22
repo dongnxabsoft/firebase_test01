@@ -32,6 +32,7 @@ server.listen(8080, () => console.log(`Server is running`));
 app.post('/test',(req,res)=>{
   ARR.push(req.body.data);
 })
+app.get('/',(req,res)=>res.json({a:"test"}))
 
 QueueRes(ARR);
 

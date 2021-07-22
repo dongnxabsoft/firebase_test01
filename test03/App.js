@@ -12,7 +12,15 @@ function App() {
 
   useEffect(() => {
     auth().signInWithEmailAndPassword('dongnx@absoft.com.vn', '123456Aa').then(() => {
-      console.log('User account created & signed in!');
+      console.log('User account signed in!');
+
+      messaging().getToken().then(token => {
+        ref.doc('temp').update({
+          tokens: firestore.FieldValue.arrayUnion(token)
+        })
+        setToken(token)
+      })
+      // Update token
     }).catch(error => {
       if (error.code === 'auth/email-already-in-use') {
         console.log('That email address is already in use!');
@@ -35,15 +43,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-
-    messaging().getToken().then(token => {
-      ref.doc('temp').update({
-        tokens: firestore.FieldValue.arrayUnion(token)
-      })
-      setToken(token)
-    })
-    // Update token
-
     try {
       messaging().subscribeToTopic('VietNam').then(() => {
         console.log("SUB VN thanh cong ? ")
@@ -76,12 +75,13 @@ function App() {
 
 
   const ClickHandler = async () => {
+
     setTimeout(() => {
-      axios.post(`http://192.168.5.113:8080/test`, { data: token }).then(() => console.log('////////')).catch(err => console.log(err));
+     axios.post(`http://192.168.5.113:8080/test`, { data: token });
       setbuttonClick(true)
       setTimeout(() => setbuttonClick(false), 3000)
     }, 0.000001)
-    // fetch('https://localhost:443/').then((res)=>console.log("//////////////////"))
+    // axios.get('http://192.168.5.113:8080/').then((res)=>console.log("//////////////////"))
   }
 
   const ChangeHandler = (text) => {
